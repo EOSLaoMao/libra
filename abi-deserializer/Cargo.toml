@@ -1,0 +1,13 @@
+[package]
+name = "abi-deserializer"
+version = "0.1.0"
+authors = ["WLBF <lbf1353@live.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+canonical_serialization = { path = "../common/canonical_serialization", package = "canonical_serialization" }
+failure = { path = "../common/failure_ext", package = "failure_ext" }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"

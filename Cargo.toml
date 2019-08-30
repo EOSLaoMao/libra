@@ -74,6 +74,7 @@ members = [
     "testsuite/libra_fuzzer",
     "types",
     "vm_validator",
+    "abi-deserializer",
 ]
 
 [profile.release]

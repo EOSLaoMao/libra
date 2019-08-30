@@ -2,7 +2,8 @@
 // SPDX-License-Identifier: Apache-2.0
 
 use crate::{client_proxy::ClientProxy, commands::*};
-use types::account_config::get_account_resource_or_default;
+use crate::custom_resource::get_account_resource;
+use types::{account_address::AccountAddress, account_config::get_account_resource_or_default};
 use vm_genesis::get_transaction_name;
 
 /// Major command for query operations.
@@ -23,6 +24,7 @@ impl Command for QueryCommand {
             Box::new(QueryCommandGetTxnByAccountSeq {}),
             Box::new(QueryCommandGetTxnByRange {}),
             Box::new(QueryCommandGetEvent {}),
+            Box::new(QueryCommandGetLatestResource {}),
         ];
 
         subcommand_execute(&params[0], commands, client, &params[1..]);
@@ -226,6 +228,42 @@ impl Command for QueryCommandGetEvent {
                 println!("Last event state: {:#?}", last_event_state);
             }
             Err(e) => report_error("Error getting events by access path", e),
+        }
+    }
+}
+
+/// Command to query latest account state from validator.
+pub struct QueryCommandGetLatestResource {}
+
+impl Command for QueryCommandGetLatestResource {
+    fn get_aliases(&self) -> Vec<&'static str> {
+        vec!["resource", "re"]
+    }
+    fn get_params_help(&self) -> &'static str {
+        "<account_ref_id>|<account_address> <publish_account_ref_id>|<publish_address> <module_name> <struct_name> <abi_file_path>"
+    }
+    fn get_description(&self) -> &'static str {
+        "Get the resource for an account"
+    }
+    fn execute(&self, client: &mut ClientProxy, params: &[&str]) {
+        println!(">> Getting latest account state");
+        let module_address = client
+            .get_account_address_from_parameter(params[2])
+            .unwrap_or_else(|e| {
+                report_error("Error parse module address", e);
+                AccountAddress::default()
+            });
+        match client.get_latest_account_state(&[params[0], params[1]]) {
+            Ok((acc, version)) => match get_account_resource(module_address.clone(), &acc, &params)
+            {
+                Ok(s) => println!(
+                    "Resource: {}\n \
+                     Blockchain Version: {}\n",
+                    s, version,
+                ),
+                Err(e) => report_error("Error getting account resource", e),
+            },
+            Err(e) => report_error("Error getting latest account state", e),
         }
     }
 }

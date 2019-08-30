@@ -34,6 +34,8 @@ metrics = { path = "../common/metrics" }
 proto_conv = { path = "../common/proto_conv" }
 types = { path = "../types" }
 vm_genesis = { path = "../language/vm/vm_genesis" }
+canonical_serialization = { path = "../common/canonical_serialization" }
+abi-deserializer = { path = "../abi-deserializer" }
 
 [dev-dependencies]
 crypto = { path = "../crypto/crypto", features = ["testing"] }
