@@ -90,7 +90,7 @@ impl AbiDeserializer {
                 },
                 Value::Object(abi) => {
                     let child = result.entry(key).or_insert(Value::Object(Map::new()));
-                    self.deserialize_impl(deserializer, abi, child.as_object_mut().unwrap()) // safe to unwrap
+                    self.deserialize_impl(deserializer, &abi, child.as_object_mut().unwrap()) // safe to unwrap
                 }
                 _ => bail!("unsupported data type"),
             };

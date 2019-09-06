@@ -53,7 +53,7 @@ pub fn get_account_resource_string(
 pub fn account_resource_path(address: AccountAddress, module_name: &str, resource_name: &str) -> Vec<u8> {
     AccessPath::resource_access_vec(
         &StructTag {
-            address: address,
+            address,
             module: module_name.to_string(),
             name: resource_name.to_string(),
             type_params: vec![],
